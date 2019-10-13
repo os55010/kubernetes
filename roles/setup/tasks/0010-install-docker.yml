@@ -1,0 +1,41 @@
+- name: install packages
+  yum:
+    name: "{ item }"
+    state: present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: add docker repository
+  yum_repository:
+    name: docker
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: install docker ce.
+  yum:
+    name: docker-ce-18.06.2.ce
+    state: latest
+
+- name: create /etc/docker
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: create daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+
+
+- name: create /etc/systemd/system/docker.service.d
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: start docker
+  systemd:
+    name: docker
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

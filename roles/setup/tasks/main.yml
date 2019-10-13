@@ -1,26 +1,7 @@
 ---
 
-- name: install packages
-  yum:
-    name: "{ item }"
-    state: present
-  with_items:
-    - yum-utils
-    - device-mapper-persistent-data
-    - lvm2
+- import_tasks: 0010-install-docker.yml
 
-- name: add docker repository
-  yum_repository:
-    name: docker
-    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+- import_tasks: 0020-install-crio.yml
 
-- name: install docker ce.
-  yum:
-    name: docker-ce-18.06.2.ce
-    state: latest
-
-- name: create /etc/docker
-  file:
-    path: /etc/docker
-    state: directory
-
+- import_tasks: 0030-install-containerd.yml
