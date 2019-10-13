@@ -2,6 +2,8 @@
 
 - import_tasks: 0010-install-docker.yml
 
-- import_tasks: 0020-install-crio.yml
+#- import_tasks: 0020-install-crio.yml
 
-- import_tasks: 0030-install-containerd.yml
+#- import_tasks: 0030-install-containerd.yml
+
+- import_tasks: 0040-install-kubeadm.yml

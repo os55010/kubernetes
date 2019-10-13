@@ -21,3 +21,41 @@
 - name: apply kernel params
   shell: sysctl --system
 
+- name: install packages
+  yum:
+    name: "{{ items }}"
+    state: latest
+  vars:
+    items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: add docker repository
+  get_url:
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: 0644
+    url: "https://download.docker.com/linux/centos/docker-ce.repo"
+
+- name: install containerd
+  yum:
+    name: containerd.io
+    state: latest
+
+- name: create /etc/containerd
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: export default config
+  shell: "containerd config default > /etc/containerd/config.toml"
+
+- name: start containerd
+  systemd:
+    name: containerd
+    state: restarted
+    enabled: yes
+
+- name: enable systemd_cgroup
+  shell: "sed -i 's/systemd_cgroup = false/systemd_cgroup = true/g' /etc/containerd/config.toml"
+

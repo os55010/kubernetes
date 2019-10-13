@@ -1,0 +1,40 @@
+- name: create kubeadm repos
+  copy:
+    src: kubernetes.repo
+    dest: /etc/yum.repos.d/kubernetes.repo
+
+- name: install selinux python module
+  yum: name=libselinux-python state=installed
+
+- name: disable selinux
+  selinux:
+    state: disabled
+  register: selinux
+
+- shell: "setenforce 0"
+
+- shell: "sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config"
+
+- name: install kubeadm kubelet kubectl
+  yum:
+    name: "{{ items }}"
+    state: latest
+    disable_excludes: kubernetes
+  vars:
+    items:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: br_netfilter
+  copy:
+    src: k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+
+- shell: sysctl --system
+
+- name: start kubelet
+  systemd:
+    name: kubelet
+    state: restarted
+    enabled: yes
