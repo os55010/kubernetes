@@ -19,6 +19,7 @@
 - name: add crio repos
   yum_repository:
     name: crio
+    description: "crio repo"
     baseurl: https://cbs.centos.org/repos/paas7-crio-115-release/x86_64/os/
 
 - name: install crio
