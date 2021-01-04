@@ -1,0 +1,2 @@
+ansible-playbook setup.yml -i inventory/dev/inventory.ini -u os55010 --ask-pass --ask-become-pass
+
